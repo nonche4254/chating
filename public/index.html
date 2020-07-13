@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatting</title>
+    <link rel="shortcut icon" href="#" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
+      integrity="sha512-xA6Hp6oezhjd6LiLZynuukm80f8BoZ3OpcEYaqKoCV3HKQDrYjDE1Gu8ocxgxoXmwmSzM4iqPvCsOkQNiu41GA=="
+      crossorigin="anonymous"
+    />
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"
+      integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA=="
+      crossorigin="anonymous"
+    ></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/js/all.min.js"
+    />
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+      integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="head">
+        <i class="fas fa-chevron-left"></i>
+        <img src="images/cat.jpg" alt="cat" id="img" />
+      </div>
+      <div class="icon">
+        <i class="fas fa-video" id="video"></i>
+        <i class="fas fa-phone-alt" id="phone"></i>
+        <i class="fas fa-ellipsis-v"></i>
+      </div>
+    </div>
+    <div class="chatting" id="chat">
+      <div class="chat-font"></div>
+    </div>
+    <div class="footer">
+      <a href="#" id="send"><i class="fas fa-plus"></i></a>
+      <input type="text" alt="text" id="send_0" />
+      <a href="#" id="message"><i class="fas fa-paper-plane"></i></a>
+    </div>
+  </body>
+
+  <script>
+    //소켓 io 연결
+    const socket = io();
+    // console.log(socket);
+    const sendButton = document.querySelector("#message");
+    const message = document.querySelector("#send_0");
+    sendButton.addEventListener("click", () => {
+      // console.log(message.value);
+      // 서버에 보내는 역활
+      socket.emit("chatting", message.value);
+    });
+    message.addEventListener("keypress", (e) => {
+      console.log(e);
+      if (e.key == "Enter") {
+        socket.emit("chatting", message.value);
+      }
+    });
+
+    // 서버에서 받는 역활
+    socket.on("chatting", (msg) => {
+      $(".chatting").append(
+        ` <div class="chat-font"><p>${msg}</p>
+      </div>`
+      );
+
+      //   const ul = document.querySelector(".chatting");
+      //   const li = document.createElement("li");
+      //   const txt = document.createTextNode(msg);
+      //   li.appendChild(txt); //텍스트(txt)를 li에 넣음
+      //   li.classList(li);
+      //   ul.appendChild(li); //li를 ul에 넣음
+      //   console.log(msg, "from server!!!");
+    });
+  </script>
+</html>
